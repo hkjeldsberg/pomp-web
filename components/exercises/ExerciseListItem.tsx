@@ -1,69 +1,35 @@
-import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import type { Exercise } from '../../supabase/types';
+'use client';
+
+import type { Exercise } from '@/supabase/types';
+import { Badge } from '@/components/ui/Badge';
 
 interface ExerciseListItemProps {
   exercise: Exercise;
   onEdit: (exercise: Exercise) => void;
   onDelete: (exercise: Exercise) => void;
-  testID?: string;
 }
 
-export function ExerciseListItem({ exercise, onEdit, onDelete, testID }: ExerciseListItemProps): React.JSX.Element {
+export function ExerciseListItem({ exercise, onEdit, onDelete }: ExerciseListItemProps) {
   return (
-    <View testID={testID ?? 'exercise-list-item'} style={styles.row}>
-      <Text style={styles.name}>{exercise.name}</Text>
-      <View style={styles.actions}>
-        <Pressable
-          testID="edit-button"
-          onPress={() => onEdit(exercise)}
-          style={styles.actionBtn}
-          hitSlop={8}
+    <div className="flex items-center gap-3 py-3 px-2 border-b border-border-teal/30 last:border-0 hover:bg-bg-card/50 rounded-lg transition-colors group">
+      <span className="flex-1 text-text-primary text-sm">{exercise.name}</span>
+      <Badge label={exercise.category} />
+      <div className="flex gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+        <button
+          onClick={() => onEdit(exercise)}
+          aria-label={`Rediger ${exercise.name}`}
+          className="h-8 px-2 rounded text-sm text-accent-muted hover:text-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
-          <Text style={styles.actionText}>✎</Text>
-        </Pressable>
-        <Pressable
-          testID="delete-button"
-          onPress={() => onDelete(exercise)}
-          style={styles.actionBtn}
-          hitSlop={8}
+          Rediger
+        </button>
+        <button
+          onClick={() => onDelete(exercise)}
+          aria-label={`Slett ${exercise.name}`}
+          className="h-8 px-2 rounded text-sm text-red-400 hover:bg-red-900/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
         >
-          <Text style={[styles.actionText, styles.deleteText]}>✕</Text>
-        </Pressable>
-      </View>
-    </View>
+          Slett
+        </button>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(32,210,170,0.12)',
-  },
-  name: {
-    flex: 1,
-    color: '#E0F5F0',
-    fontSize: 15,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 4,
-  },
-  actionBtn: {
-    minWidth: 44,
-    minHeight: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  actionText: {
-    color: '#5DCAA5',
-    fontSize: 18,
-  },
-  deleteText: {
-    color: '#ff6b6b',
-  },
-});

@@ -1,43 +1,26 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Card } from '../ui/Card';
-import { formatStatNumber } from '../../lib/utils/format';
+import { formatStatNumber } from '@/lib/utils/format';
+import type { AggregateStats as AggStats } from '@/lib/db/statistics';
 
 interface AggregateStatsProps {
-  totalSessions: number;
-  totalSets: number;
-  totalReps: number;
-  totalVolumeKg: number;
+  stats: AggStats;
 }
 
-interface StatCellProps {
-  value: number;
-  label: string;
-}
+const CELLS = [
+  { key: 'totalSessions' as const, label: 'Økter' },
+  { key: 'totalSets' as const, label: 'Sett' },
+  { key: 'totalReps' as const, label: 'Reps' },
+  { key: 'totalVolumeKg' as const, label: 'Volum (kg)' },
+];
 
-function StatCell({ value, label }: StatCellProps): React.JSX.Element {
+export function AggregateStats({ stats }: AggregateStatsProps) {
   return (
-    <Card style={styles.cell}>
-      <Text style={styles.value}>{formatStatNumber(value)}</Text>
-      <Text style={styles.label}>{label}</Text>
-    </Card>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {CELLS.map(({ key, label }) => (
+        <div key={key} className="rounded-xl bg-bg-card border border-border-teal p-4 text-center">
+          <p className="text-2xl font-bold text-accent tabular-nums">{formatStatNumber(stats[key])}</p>
+          <p className="text-accent-muted text-sm mt-1">{label}</p>
+        </div>
+      ))}
+    </div>
   );
 }
-
-export function AggregateStats({ totalSessions, totalSets, totalReps, totalVolumeKg }: AggregateStatsProps): React.JSX.Element {
-  return (
-    <View style={styles.grid}>
-      <StatCell value={totalSessions} label="Sessions" />
-      <StatCell value={totalSets} label="Sets" />
-      <StatCell value={totalReps} label="Reps" />
-      <StatCell value={totalVolumeKg} label="Volume kg" />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  cell: { flex: 1, minWidth: '45%', alignItems: 'center' },
-  value: { color: '#20D2AA', fontSize: 28, fontWeight: '800' },
-  label: { color: '#5DCAA5', fontSize: 13, marginTop: 4 },
-});

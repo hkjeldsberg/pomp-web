@@ -1,76 +1,41 @@
-import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+'use client';
+
+import type { RoutineWithExercises } from '@/lib/db/routines';
+import { Button } from '@/components/ui/Button';
 
 interface RoutineCardProps {
-  routineId: string;
-  name: string;
-  exerciseCount: number;
-  onStart: () => void;
-  onEdit: () => void;
+  routine: RoutineWithExercises;
+  onStart: (id: string) => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
-export function RoutineCard({ name, exerciseCount, onStart, onEdit }: RoutineCardProps): React.JSX.Element {
+export function RoutineCard({ routine, onStart, onEdit, onDelete }: RoutineCardProps) {
   return (
-    <View style={styles.card}>
-      <Pressable style={({ pressed }) => [styles.info, pressed && styles.infoPressed]} onLongPress={onEdit}>
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.count}>{exerciseCount} exercises</Text>
-      </Pressable>
-      <Pressable
-        onPress={onStart}
-        style={({ pressed }) => [
-          styles.startButton,
-          // Inline backgroundColor so NativeWind preflight cannot override it
-          { backgroundColor: '#20D2AA' },
-          pressed && { opacity: 0.75 },
-        ]}
-      >
-        <Text style={styles.startText}>Start</Text>
-      </Pressable>
-    </View>
+    <div className="rounded-xl bg-bg-card border border-border-teal p-4 flex flex-col gap-3 hover:border-accent/40 transition-colors group">
+      <div>
+        <h3 className="text-text-primary font-semibold text-base">{routine.name}</h3>
+        <p className="text-accent-muted text-sm mt-0.5">
+          {routine.exercises.length} øvelse{routine.exercises.length !== 1 ? 'r' : ''}
+        </p>
+      </div>
+      <div className="flex gap-2 flex-wrap">
+        <Button variant="primary" size="sm" onClick={() => onStart(routine.id)}>
+          Start økt
+        </Button>
+        <Button variant="secondary" size="sm" onClick={() => onEdit(routine.id)} aria-label="Rediger rutine">
+          Rediger
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => onDelete(routine.id)}
+          aria-label="Slett rutine"
+          className="text-red-400 hover:bg-red-900/20"
+        >
+          Slett
+        </Button>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#112826',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(32, 210, 170, 0.15)',
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  info: {
-    flex: 1,
-    marginRight: 16,
-  },
-  infoPressed: {
-    opacity: 0.6,
-  },
-  name: {
-    color: '#E0F5F0',
-    fontSize: 17,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  count: {
-    color: '#5DCAA5',
-    fontSize: 13,
-  },
-  startButton: {
-    minHeight: 44,
-    minWidth: 80,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 16,
-  },
-  startText: {
-    color: '#0A1F1C',
-    fontWeight: '700',
-    fontSize: 15,
-  },
-});

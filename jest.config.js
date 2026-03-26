@@ -1,9 +1,15 @@
-module.exports = {
-  preset: 'jest-expo',
-  transformIgnorePatterns: [
-    'node_modules/(?!' +
-      '(@react-native|react-native|react-native-[^/]+|@react-navigation/[^/]+|expo|expo-[^/]+|@expo/[^/]+|@unimodules/[^/]+|unimodules|sentry-expo|native-base|react-native-svg' +
-      '|victory-native|@shopify/react-native-skia|react-native-reanimated|react-native-gesture-handler' +
-      ')/)',
-  ],
+const nextJest = require('next/jest');
+
+const createJestConfig = nextJest({ dir: './' });
+
+/** @type {import('jest').Config} */
+const customConfig = {
+  testEnvironment: 'jest-environment-jsdom',
+  setupFilesAfterFramework: ['<rootDir>/jest.setup.ts'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+  },
+  testPathPattern: '__tests__/components',
 };
+
+module.exports = createJestConfig(customConfig);

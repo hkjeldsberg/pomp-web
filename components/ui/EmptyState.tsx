@@ -1,49 +1,22 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import { Card } from './Card';
 import { Button } from './Button';
 
 interface EmptyStateProps {
-  iconName: string;
   title: string;
   subtitle?: string;
-  action?: { label: string; onPress: () => void };
+  action?: { label: string; onClick: () => void };
 }
 
-export function EmptyState({ iconName: _iconName, title, subtitle, action }: EmptyStateProps): React.JSX.Element {
+export function EmptyState({ title, subtitle, action }: EmptyStateProps) {
   return (
-    <Card style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
-      {action ? (
-        <View style={styles.actionContainer}>
-          <Button label={action.label} onPress={action.onPress} />
-        </View>
-      ) : null}
+    <Card className="flex flex-col items-center justify-center p-8 text-center">
+      <p className="text-text-primary text-lg font-semibold mb-2">{title}</p>
+      {subtitle && <p className="text-accent-muted text-sm mb-4">{subtitle}</p>}
+      {action && (
+        <Button onClick={action.onClick} className="mt-2">
+          {action.label}
+        </Button>
+      )}
     </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 32,
-  },
-  title: {
-    color: '#E0F5F0',
-    fontSize: 17,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    color: '#5DCAA5',
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  actionContainer: {
-    marginTop: 16,
-  },
-});

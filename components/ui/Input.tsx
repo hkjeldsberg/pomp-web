@@ -1,44 +1,32 @@
-import React from 'react';
-import { TextInput, Text, View, StyleSheet, type TextInputProps } from 'react-native';
+'use client';
 
-interface InputProps extends Omit<TextInputProps, 'style'> {
-  value: string;
-  onChangeText: (text: string) => void;
+import type { InputHTMLAttributes } from 'react';
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
   errorText?: string;
 }
 
-export function Input(props: InputProps): React.JSX.Element {
-  const { value, onChangeText, errorText, ...rest } = props;
-
+export function Input({ label, errorText, className = '', id, ...props }: InputProps) {
   return (
-    <View>
-      <TextInput
-        value={value}
-        onChangeText={onChangeText}
-        style={styles.input}
-        placeholderTextColor="#5DCAA5"
-        {...rest}
+    <div className="flex flex-col gap-1">
+      {label && (
+        <label htmlFor={id} className="text-sm text-accent-muted font-medium">
+          {label}
+        </label>
+      )}
+      <input
+        id={id}
+        {...props}
+        className={[
+          'min-h-[44px] w-full rounded-lg bg-bg-surface px-3.5 py-2.5 text-text-primary text-base',
+          'border border-border-teal placeholder:text-accent-muted/50',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base',
+          'disabled:opacity-50 disabled:cursor-not-allowed',
+          className,
+        ].join(' ')}
       />
-      {errorText ? <Text style={styles.error}>{errorText}</Text> : null}
-    </View>
+      {errorText && <span className="text-sm text-red-400">{errorText}</span>}
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    backgroundColor: '#0D1F1D',
-    color: '#E0F5F0',
-    minHeight: 44,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(32, 210, 170, 0.2)',
-  },
-  error: {
-    color: '#5DCAA5',
-    fontSize: 13,
-    marginTop: 4,
-  },
-});

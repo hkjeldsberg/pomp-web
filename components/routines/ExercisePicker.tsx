@@ -1,10 +1,8 @@
-import React from 'react';
-import { View, Text, SectionList, Pressable, StyleSheet } from 'react-native';
-import { Button } from '../ui/Button';
-import type { Exercise } from '../../supabase/types';
+'use client';
 
-type Category = 'Back' | 'Chest' | 'Legs' | 'Shoulders' | 'Biceps' | 'Triceps' | 'Core';
-const CATEGORIES: Category[] = ['Back', 'Chest', 'Legs', 'Shoulders', 'Biceps', 'Triceps', 'Core'];
+import { useState } from 'react';
+import type { Exercise } from '@/supabase/types';
+import { Button } from '@/components/ui/Button';
 
 interface ExercisePickerProps {
   exercises: Exercise[];
@@ -14,62 +12,68 @@ interface ExercisePickerProps {
   onClose: () => void;
 }
 
-export function ExercisePicker({ exercises, selectedIds, onToggle, onConfirm, onClose }: ExercisePickerProps): React.JSX.Element {
+const CATEGORIES = ['Rygg', 'Bryst', 'Bein', 'Skuldre', 'Biceps', 'Triceps', 'Kjerne'] as const;
+
+export function ExercisePicker({ exercises, selectedIds, onToggle, onConfirm, onClose }: ExercisePickerProps) {
+  const [search, setSearch] = useState('');
+
+  const filtered = exercises.filter((e) =>
+    e.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   const sections = CATEGORIES
-    .map((cat) => ({
-      title: cat,
-      data: exercises.filter((e) => e.category === cat),
-    }))
+    .map((cat) => ({ title: cat, data: filtered.filter((e) => e.category === cat) }))
     .filter((s) => s.data.length > 0);
 
+  // Exercises not matching any category bucket
+  const other = filtered.filter((e) => !(CATEGORIES as readonly string[]).includes(e.category));
+  if (other.length > 0) sections.push({ title: 'Andre', data: other });
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Select exercises</Text>
-      <SectionList
-        sections={sections}
-        keyExtractor={(item) => item.id}
-        stickySectionHeadersEnabled
-        renderSectionHeader={({ section }) => (
-          <View style={styles.sectionHeaderWrapper}>
-            <Text style={styles.sectionHeader}>{section.title}</Text>
-          </View>
-        )}
-        renderItem={({ item }) => {
-          const isSelected = selectedIds.includes(item.id);
-          return (
-            <Pressable
-              testID={isSelected ? `selected-${item.id}` : `exercise-${item.id}`}
-              onPress={() => onToggle(item)}
-              style={[styles.row, isSelected && styles.rowSelected]}
-            >
-              <Text style={styles.exerciseName}>{item.name}</Text>
-              {isSelected ? <Text style={styles.checkmark}>✓</Text> : null}
-            </Pressable>
-          );
-        }}
-        style={styles.list}
+    <div className="flex flex-col h-full">
+      <input
+        type="search"
+        placeholder="Søk øvelser…"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="mb-3 h-10 rounded-lg bg-bg-surface border border-border-teal px-3 text-text-primary placeholder:text-accent-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm"
+        autoFocus
       />
-      <View style={styles.actions}>
-        <Button label="Confirm" onPress={() => onConfirm(selectedIds)} />
-        <View style={styles.cancelWrapper}>
-          <Button label="Cancel" onPress={onClose} variant="secondary" />
-        </View>
-      </View>
-    </View>
+      <div className="flex-1 overflow-y-auto min-h-0">
+        {sections.map(({ title, data }) => (
+          <div key={title}>
+            <div className="sticky top-0 bg-bg-surface py-1.5">
+              <span className="text-xs font-bold text-accent-muted uppercase tracking-wider">{title}</span>
+            </div>
+            {data.map((ex) => {
+              const isSelected = selectedIds.includes(ex.id);
+              return (
+                <button
+                  key={ex.id}
+                  onClick={() => onToggle(ex)}
+                  className={[
+                    'w-full flex items-center justify-between py-3 px-2 border-b border-border-teal/40 text-sm',
+                    'hover:bg-bg-card transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset',
+                    isSelected ? 'bg-accent/5 text-accent' : 'text-text-primary',
+                  ].join(' ')}
+                >
+                  <span>{ex.name}</span>
+                  {isSelected && <span className="text-accent font-bold">✓</span>}
+                </button>
+              );
+            })}
+          </div>
+        ))}
+        {sections.length === 0 && (
+          <p className="text-accent-muted text-sm py-8 text-center">Ingen øvelser funnet</p>
+        )}
+      </div>
+      <div className="flex gap-2 pt-4 border-t border-border-teal mt-2">
+        <Button onClick={() => onConfirm(selectedIds)} className="flex-1">
+          Bekreft ({selectedIds.length})
+        </Button>
+        <Button variant="ghost" onClick={onClose}>Avbryt</Button>
+      </div>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0D1F1D', padding: 16 },
-  title: { color: '#E0F5F0', fontSize: 20, fontWeight: '700', marginBottom: 16 },
-  list: { flex: 1 },
-  sectionHeaderWrapper: { backgroundColor: '#0D1F1D', paddingTop: 4 },
-  sectionHeader: { color: '#5DCAA5', fontSize: 12, fontWeight: '700', textTransform: 'uppercase', paddingVertical: 8 },
-  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: 'rgba(32,210,170,0.1)' },
-  rowSelected: { backgroundColor: 'rgba(32,210,170,0.08)' },
-  exerciseName: { color: '#E0F5F0', fontSize: 16 },
-  checkmark: { color: '#20D2AA', fontSize: 16, fontWeight: '700' },
-  actions: { paddingTop: 16 },
-  cancelWrapper: { marginTop: 8 },
-});

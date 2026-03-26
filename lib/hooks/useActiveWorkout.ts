@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useRouter } from 'expo-router';
+import { useRouter } from 'next/navigation';
 import { logSet as dbLogSet, updateSet as dbUpdateSet, deleteSet as dbDeleteSet } from '../db/sets';
 import { endWorkout, cancelWorkout } from '../db/workouts';
 import type { WorkoutSet } from '../../supabase/types';

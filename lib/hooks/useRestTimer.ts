@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import * as Haptics from 'expo-haptics';
 
 export interface RestTimerConfig {
   defaultSeconds: number;
@@ -54,7 +53,7 @@ export function useRestTimer(config: RestTimerConfig): UseRestTimerReturn {
       if (remaining <= 0) {
         clearTick();
         setSecondsRemaining(0);
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+        // Web: no haptic feedback available
       } else {
         setSecondsRemaining(remaining);
       }

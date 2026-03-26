@@ -1,69 +1,37 @@
-import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
-import type { DateRange } from '../../lib/db/statistics';
+'use client';
 
-interface Option {
-  value: DateRange;
-  label: string;
-}
+import type { DateRange } from '@/lib/db/statistics';
 
-const OPTIONS: Option[] = [
-  { value: '4w', label: '4 weeks' },
-  { value: '3m', label: '3 mo' },
-  { value: '1y', label: '1 year' },
-  { value: 'all', label: 'All' },
+const OPTIONS: { value: DateRange; label: string }[] = [
+  { value: '4w', label: '4 uker' },
+  { value: '3m', label: '3 mnd' },
+  { value: '1y', label: '1 år' },
+  { value: 'all', label: 'Alt' },
 ];
 
 interface DateRangeFilterProps {
   selected: DateRange;
   onChange: (range: DateRange) => void;
-  testID?: string;
 }
 
-export function DateRangeFilter({ selected, onChange, testID }: DateRangeFilterProps): React.JSX.Element {
+export function DateRangeFilter({ selected, onChange }: DateRangeFilterProps) {
   return (
-    <View testID={testID ?? 'date-range-filter'} style={styles.container}>
-      {OPTIONS.map((opt) => (
-        <Pressable
-          key={opt.value}
-          testID={`range-option-${opt.value}`}
-          onPress={() => onChange(opt.value)}
-          style={[styles.option, selected === opt.value && styles.optionActive]}
+    <div className="flex gap-1.5">
+      {OPTIONS.map(({ value, label }) => (
+        <button
+          key={value}
+          onClick={() => onChange(value)}
+          className={[
+            'flex-1 min-h-[44px] px-3 rounded-lg border text-sm transition-colors',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+            selected === value
+              ? 'bg-accent border-accent text-bg-base font-bold'
+              : 'border-border-teal text-accent-muted hover:border-accent hover:text-accent',
+          ].join(' ')}
         >
-          <Text style={[styles.optionText, selected === opt.value && styles.optionTextActive]}>
-            {opt.label}
-          </Text>
-        </Pressable>
+          {label}
+        </button>
       ))}
-    </View>
+    </div>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    gap: 4,
-    marginBottom: 16,
-  },
-  option: {
-    flex: 1,
-    minHeight: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(32, 210, 170, 0.3)',
-  },
-  optionActive: {
-    backgroundColor: '#20D2AA',
-    borderColor: '#20D2AA',
-  },
-  optionText: {
-    color: '#5DCAA5',
-    fontSize: 13,
-  },
-  optionTextActive: {
-    color: '#0A1F1C',
-    fontWeight: '700',
-  },
-});
