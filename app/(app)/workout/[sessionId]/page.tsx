@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getRoutines } from '@/lib/db/routines';
-import { getOpenWorkout, getPreviousSessionSetDetails } from '@/lib/db/workouts';
+import { getPreviousSessionSetDetails } from '@/lib/db/workouts';
 import { ActiveWorkout } from '@/components/workout/ActiveWorkout';
-import type { WorkoutSet } from '../../../../supabase/types';
+import type { Workout, WorkoutSet } from '../../../../supabase/types';
 
 interface Props {
   params: Promise<{ sessionId: string }>;
@@ -22,9 +22,10 @@ export default async function WorkoutPage({ params }: Props) {
     .maybeSingle();
 
   if (!workout) notFound();
+  const w = workout as Workout;
 
-  const routines = await getRoutines();
-  const routine = routines.find((r) => r.id === workout.routine_id);
+  const routines = await getRoutines(supabase);
+  const routine = routines.find((r) => r.id === w.routine_id);
   if (!routine) notFound();
 
   // Load existing sets for this workout
@@ -36,12 +37,13 @@ export default async function WorkoutPage({ params }: Props) {
 
   // Load previous session sets for each exercise
   const previousSetsMap: Record<string, Awaited<ReturnType<typeof getPreviousSessionSetDetails>>> = {};
-  if (workout.routine_id) {
+  if (w.routine_id) {
     await Promise.all(
       routine.exercises.map(async ({ exercise }) => {
         previousSetsMap[exercise.id] = await getPreviousSessionSetDetails(
-          workout.routine_id!,
-          exercise.id
+          w.routine_id!,
+          exercise.id,
+          supabase
         );
       })
     );
@@ -57,7 +59,7 @@ export default async function WorkoutPage({ params }: Props) {
     <ActiveWorkout
       workoutId={sessionId}
       routine={routine}
-      startedAt={workout.started_at as string}
+      startedAt={w.started_at as string}
       previousSets={previousSetsMap}
       initialSets={initialSets}
     />

@@ -16,24 +16,24 @@ export function RoutineCard({ routine, onStart, onEdit, onDelete }: RoutineCardP
       <div>
         <h3 className="text-text-primary font-semibold text-base">{routine.name}</h3>
         <p className="text-accent-muted text-sm mt-0.5">
-          {routine.exercises.length} øvelse{routine.exercises.length !== 1 ? 'r' : ''}
+          {routine.exercises.length} exercise{routine.exercises.length !== 1 ? 's' : ''}
         </p>
       </div>
       <div className="flex gap-2 flex-wrap">
         <Button variant="primary" size="sm" onClick={() => onStart(routine.id)}>
-          Start økt
+          Start workout
         </Button>
-        <Button variant="secondary" size="sm" onClick={() => onEdit(routine.id)} aria-label="Rediger rutine">
-          Rediger
+        <Button variant="secondary" size="sm" onClick={() => onEdit(routine.id)} aria-label="Edit routine">
+          Edit
         </Button>
         <Button
           variant="ghost"
           size="sm"
           onClick={() => onDelete(routine.id)}
-          aria-label="Slett rutine"
+          aria-label="Delete routine"
           className="text-red-400 hover:bg-red-900/20"
         >
-          Slett
+          Delete
         </Button>
       </div>
     </div>

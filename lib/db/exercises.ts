@@ -1,11 +1,13 @@
 import { supabase } from '../supabase';
 import type { Exercise } from '../../supabase/types';
+
+type AnyClient = typeof supabase;
 import { EXERCISE_SEED_DATA } from '../data/exerciseSeedData';
 
 type Category = Exercise['category'];
 
-export async function getExercises(): Promise<Exercise[]> {
-  const { data, error } = await supabase
+export async function getExercises(db: AnyClient = supabase): Promise<Exercise[]> {
+  const { data, error } = await db
     .from('exercises')
     .select('*')
     .order('category')
@@ -19,11 +21,8 @@ export async function createExercise(data: { name: string; category: string }): 
   const { data: user } = await supabase.auth.getUser();
   const { data: result, error } = await supabase
     .from('exercises')
-    .insert({
-      user_id: user.user!.id,
-      name: data.name,
-      category: data.category as Category,
-    })
+    // @ts-ignore
+    .insert({ user_id: user.user!.id, name: data.name, category: data.category } as any)
     .select('*')
     .single();
 
@@ -37,7 +36,8 @@ export async function updateExercise(
 ): Promise<Exercise> {
   const { data: result, error } = await supabase
     .from('exercises')
-    .update({ name: data.name, category: data.category as Category })
+    // @ts-ignore
+    .update({ name: data.name, category: data.category } as any)
     .eq('id', id)
     .select('*')
     .single();
@@ -63,7 +63,8 @@ export async function seedExercises(): Promise<{ inserted: number }> {
 
   const { data, error } = await supabase
     .from('exercises')
-    .upsert(rows, { onConflict: 'user_id,name', ignoreDuplicates: true })
+    // @ts-ignore
+    .upsert(rows as any, { onConflict: 'user_id,name', ignoreDuplicates: true })
     .select('id');
 
   if (error) throw new Error(error.message);

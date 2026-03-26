@@ -5,10 +5,10 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 const navLinks = [
-  { href: '/', label: 'Historikk' },
-  { href: '/routines', label: 'Rutiner' },
-  { href: '/exercises', label: 'Øvelser' },
-  { href: '/statistics', label: 'Statistikk' },
+  { href: '/', label: 'History' },
+  { href: '/routines', label: 'Routines' },
+  { href: '/exercises', label: 'Exercises' },
+  { href: '/statistics', label: 'Statistics' },
 ];
 
 export function Navbar() {
@@ -49,7 +49,7 @@ export function Navbar() {
         onClick={handleSignOut}
         className="text-sm text-accent-muted hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-2 py-1"
       >
-        Logg ut
+        Sign out
       </button>
     </nav>
   );

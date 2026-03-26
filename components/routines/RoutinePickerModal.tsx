@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/Modal';
-import { Button } from '@/components/ui/Button';
 import { createWorkout } from '@/lib/db/workouts';
 import type { RoutineWithExercises } from '@/lib/db/routines';
 
@@ -26,16 +25,16 @@ export function RoutinePickerModal({ open, onClose, routines }: RoutinePickerMod
       onClose();
       router.push(`/workout/${workout.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Klarte ikke starte økt');
+      setError(err instanceof Error ? err.message : 'Failed to start workout');
       setLoading(null);
     }
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Velg rutine">
+    <Modal open={open} onClose={onClose} title="Select routine">
       {error && <p className="text-red-400 text-sm mb-3">{error}</p>}
       {routines.length === 0 ? (
-        <p className="text-accent-muted text-sm">Ingen rutiner enda. Opprett en rutine først.</p>
+        <p className="text-accent-muted text-sm">No routines yet. Create a routine first.</p>
       ) : (
         <ul className="flex flex-col gap-2">
           {routines.map((r) => (
@@ -46,8 +45,8 @@ export function RoutinePickerModal({ open, onClose, routines }: RoutinePickerMod
                 className="w-full text-left px-4 py-3 rounded-lg bg-bg-card border border-border-teal hover:border-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50"
               >
                 <div className="text-text-primary font-medium">{r.name}</div>
-                <div className="text-accent-muted text-sm">{r.exercises.length} øvelser</div>
-                {loading === r.id && <span className="text-xs text-accent">Starter…</span>}
+                <div className="text-accent-muted text-sm">{r.exercises.length} exercises</div>
+                {loading === r.id && <span className="text-xs text-accent">Starting…</span>}
               </button>
             </li>
           ))}

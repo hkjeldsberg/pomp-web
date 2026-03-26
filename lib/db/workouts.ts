@@ -1,6 +1,8 @@
 import { supabase } from '../supabase';
 import type { Workout } from '../../supabase/types';
 
+type AnyClient = typeof supabase;
+
 export interface WorkoutSummary {
   id: string;
   started_at: string;
@@ -52,7 +54,8 @@ export async function createWorkout(data: { routineId?: string }): Promise<Worko
 
   const { data: workout, error } = await supabase
     .from('workouts')
-    .insert({ routine_id: data.routineId ?? null, user_id: (await supabase.auth.getUser()).data.user!.id })
+    // @ts-ignore
+    .insert({ routine_id: data.routineId ?? null, user_id: (await supabase.auth.getUser()).data.user!.id } as any)
     .select('*')
     .single();
 
@@ -63,7 +66,8 @@ export async function createWorkout(data: { routineId?: string }): Promise<Worko
 export async function endWorkout(id: string): Promise<Workout> {
   const { data, error } = await supabase
     .from('workouts')
-    .update({ ended_at: new Date().toISOString() })
+    // @ts-ignore
+    .update({ ended_at: new Date().toISOString() } as any)
     .eq('id', id)
     .select('*')
     .single();
@@ -94,8 +98,8 @@ interface WorkoutHistoryRow {
   workout_sets: Array<{ id: string }>;
 }
 
-export async function getWorkoutHistory(): Promise<WorkoutSummary[]> {
-  const { data, error } = await supabase
+export async function getWorkoutHistory(db: AnyClient = supabase): Promise<WorkoutSummary[]> {
+  const { data, error } = await db
     .from('workouts')
     .select(`
       id,
@@ -142,8 +146,8 @@ interface WorkoutDetailRow {
   workout_sets: WorkoutSetDetailRow[];
 }
 
-export async function getWorkoutDetail(id: string): Promise<WorkoutDetail> {
-  const { data, error } = await supabase
+export async function getWorkoutDetail(id: string, db: AnyClient = supabase): Promise<WorkoutDetail> {
+  const { data, error } = await db
     .from('workouts')
     .select(`
       id,
@@ -204,9 +208,10 @@ export interface PreviousSetDetail {
 // Used to pre-fill set rows in the inline active workout layout.
 export async function getPreviousSessionSetDetails(
   routineId: string,
-  exerciseId: string
+  exerciseId: string,
+  db: AnyClient = supabase
 ): Promise<PreviousSetDetail[]> {
-  const { data: lastWorkout, error: wError } = await supabase
+  const { data: lastWorkout, error: wError } = await db
     .from('workouts')
     .select('id')
     .eq('routine_id', routineId)
@@ -218,7 +223,7 @@ export async function getPreviousSessionSetDetails(
   if (wError) throw new Error(wError.message);
   if (!lastWorkout) return [];
 
-  const { data: sets, error: sError } = await supabase
+  const { data: sets, error: sError } = await db
     .from('workout_sets')
     .select('set_number, weight_kg, reps')
     .eq('workout_id', (lastWorkout as unknown as { id: string }).id)

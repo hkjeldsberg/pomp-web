@@ -49,7 +49,8 @@ export async function upsertUserPreferences(
 
   const { error } = await supabase
     .from('user_preferences')
-    .upsert(update, { onConflict: 'user_id' });
+    // @ts-ignore
+    .upsert(update as any, { onConflict: 'user_id' });
 
   if (error) throw new Error(error.message);
 }

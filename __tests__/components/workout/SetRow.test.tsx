@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SetRow } from '@/components/workout/SetRow';
 
@@ -9,7 +9,6 @@ const baseProps = {
   completed: false,
   onLog: jest.fn().mockResolvedValue(undefined),
   onToggleComplete: jest.fn().mockResolvedValue(undefined),
-  onDelete: jest.fn().mockResolvedValue(undefined),
 };
 
 describe('SetRow', () => {
@@ -20,26 +19,39 @@ describe('SetRow', () => {
     expect(screen.getByPlaceholderText(/reps/i)).toBeInTheDocument();
   });
 
-  it('shows previous session values as placeholder text', () => {
+  it('pre-fills inputs with previous session values as greyed text', () => {
     render(<SetRow {...baseProps} previousWeight={80} previousReps={5} />);
-    expect(screen.getByPlaceholderText('80 kg')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('5 reps')).toBeInTheDocument();
+    expect((screen.getByLabelText(/weight set 1/i) as HTMLInputElement).value).toBe('80');
+    expect((screen.getByLabelText(/reps set 1/i) as HTMLInputElement).value).toBe('5');
   });
 
-  it('calls onLog when values are entered and log button pressed', async () => {
+  it('calls onLog when values are entered and checkmark button pressed', async () => {
     const user = userEvent.setup();
     const onLog = jest.fn().mockResolvedValue(undefined);
     render(<SetRow {...baseProps} onLog={onLog} />);
 
     await user.type(screen.getByPlaceholderText(/kg/i), '100');
     await user.type(screen.getByPlaceholderText(/reps/i), '5');
-    await user.click(screen.getByRole('button', { name: /logg/i }));
+    await user.click(screen.getByRole('button', { name: /log set/i }));
 
     expect(onLog).toHaveBeenCalledWith({ weight: 100, reps: 5 });
   });
 
+  it('calls onTimerStart after logging a set', async () => {
+    const user = userEvent.setup();
+    const onLog = jest.fn().mockResolvedValue(undefined);
+    const onTimerStart = jest.fn();
+    render(<SetRow {...baseProps} onLog={onLog} onTimerStart={onTimerStart} />);
+
+    await user.type(screen.getByPlaceholderText(/kg/i), '100');
+    await user.type(screen.getByPlaceholderText(/reps/i), '5');
+    await user.click(screen.getByRole('button', { name: /log set/i }));
+
+    expect(onTimerStart).toHaveBeenCalled();
+  });
+
   it('applies completed styling when completed prop is true', () => {
     const { container } = render(<SetRow {...baseProps} completed={true} />);
-    expect(container.firstChild).toHaveClass('opacity-60');
+    expect(container.firstChild).toHaveClass('opacity-50');
   });
 });

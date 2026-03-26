@@ -17,11 +17,12 @@ interface ExerciseSectionProps {
   onLog: (data: { exerciseId: string; setNumber: number; weightKg: number; reps: number }) => Promise<void>;
   onToggleComplete: (setId: string) => Promise<void>;
   onDeleteSet: (setId: string) => Promise<void>;
+  onTimerStart?: () => void;
 }
 
 export function ExerciseSection({
   exerciseId, exerciseName, category, workoutId,
-  loggedSets, previousSets, onLog, onToggleComplete, onDeleteSet,
+  loggedSets, previousSets, onLog, onToggleComplete, onDeleteSet, onTimerStart,
 }: ExerciseSectionProps) {
   const totalRows = Math.max(DEFAULT_SETS, loggedSets.length + (loggedSets.length < DEFAULT_SETS ? 0 : 1));
 
@@ -50,7 +51,7 @@ export function ExerciseSection({
               loggedReps={logged?.reps}
               onLog={({ weight, reps }) => onLog({ exerciseId, setNumber, weightKg: weight, reps })}
               onToggleComplete={onToggleComplete}
-              onDelete={onDeleteSet}
+              onTimerStart={onTimerStart}
             />
           );
         })}

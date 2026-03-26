@@ -6,10 +6,10 @@ interface AggregateStatsProps {
 }
 
 const CELLS = [
-  { key: 'totalSessions' as const, label: 'Økter' },
-  { key: 'totalSets' as const, label: 'Sett' },
+  { key: 'totalSessions' as const, label: 'Sessions' },
+  { key: 'totalSets' as const, label: 'Sets' },
   { key: 'totalReps' as const, label: 'Reps' },
-  { key: 'totalVolumeKg' as const, label: 'Volum (kg)' },
+  { key: 'totalVolumeKg' as const, label: 'Volume (kg)' },
 ];
 
 export function AggregateStats({ stats }: AggregateStatsProps) {

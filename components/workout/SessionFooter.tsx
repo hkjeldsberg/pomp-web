@@ -32,22 +32,22 @@ export function SessionFooter({ workoutId, onEnd, onCancel }: SessionFooterProps
         className="flex-1"
         onClick={() => setEndOpen(true)}
       >
-        Avslutt økt
+        End workout
       </Button>
       <Button
         variant="ghost"
         onClick={() => setCancelOpen(true)}
       >
-        Avbryt
+        Cancel
       </Button>
 
       <ConfirmModal
         open={endOpen}
         onClose={() => setEndOpen(false)}
         onConfirm={handleEnd}
-        title="Avslutt økt"
-        message="Er du ferdig? Økten blir lagret."
-        confirmLabel="Avslutt"
+        title="End workout"
+        message="Done? The session will be saved."
+        confirmLabel="End"
         loading={loading}
       />
 
@@ -55,9 +55,9 @@ export function SessionFooter({ workoutId, onEnd, onCancel }: SessionFooterProps
         open={cancelOpen}
         onClose={() => setCancelOpen(false)}
         onConfirm={handleCancel}
-        title="Avbryt økt"
-        message="Alle settene i denne økten blir slettet. Er du sikker?"
-        confirmLabel="Avbryt økt"
+        title="Cancel workout"
+        message="All sets in this session will be deleted. Are you sure?"
+        confirmLabel="Cancel workout"
         confirmVariant="danger"
         loading={loading}
       />

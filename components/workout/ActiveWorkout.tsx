@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useActiveWorkout, type ActiveSet } from '@/lib/hooks/useActiveWorkout';
+import { useRestTimer } from '@/lib/hooks/useRestTimer';
 import type { RoutineWithExercises } from '@/lib/db/routines';
 import type { PreviousSetDetail } from '@/lib/db/workouts';
 import { SessionHeader } from './SessionHeader';
@@ -19,6 +20,11 @@ interface ActiveWorkoutProps {
 export function ActiveWorkout({ workoutId, routine, startedAt, previousSets, initialSets }: ActiveWorkoutProps) {
   const { sets, setSets, logSet, toggleComplete, deleteSets, endSession, cancelSession, onError } =
     useActiveWorkout(workoutId);
+
+  const { secondsRemaining, isRunning, startTimer, stopTimer } = useRestTimer({
+    defaultSeconds: 120,
+    enabled: true,
+  });
 
   // Hydrate with server-fetched sets on mount
   useEffect(() => {
@@ -62,6 +68,7 @@ export function ActiveWorkout({ workoutId, routine, startedAt, previousSets, ini
               }
               onToggleComplete={toggleComplete}
               onDeleteSet={deleteSets}
+              onTimerStart={startTimer}
             />
           );
         })}
@@ -72,6 +79,32 @@ export function ActiveWorkout({ workoutId, routine, startedAt, previousSets, ini
         onEnd={endSession}
         onCancel={cancelSession}
       />
+
+      {/* Rest timer overlay */}
+      {(isRunning || secondsRemaining === 0) && (
+        <div className="fixed bottom-20 md:bottom-6 inset-x-0 flex justify-center z-30 pointer-events-none px-4">
+          <div
+            className={[
+              'flex items-center gap-3 px-5 py-3 rounded-full shadow-lg pointer-events-auto',
+              'border text-sm font-semibold transition-colors',
+              secondsRemaining === 0
+                ? 'bg-accent border-accent text-bg-base'
+                : 'bg-bg-surface border-border-teal text-text-primary',
+            ].join(' ')}
+          >
+            <span className="tabular-nums text-base">
+              {secondsRemaining === 0 ? 'Rest over!' : `Rest ${secondsRemaining}s`}
+            </span>
+            <button
+              onClick={stopTimer}
+              aria-label="Dismiss rest timer"
+              className="text-xs opacity-60 hover:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -54,7 +54,7 @@ export function RoutineEditor({ allExercises, initial }: RoutineEditorProps) {
   }
 
   async function handleSave() {
-    if (!name.trim()) { setNameError('Fyll inn navn på rutinen'); return; }
+    if (!name.trim()) { setNameError('Enter routine name'); return; }
     setNameError(null);
     setSaving(true);
     setError(null);
@@ -68,7 +68,7 @@ export function RoutineEditor({ allExercises, initial }: RoutineEditorProps) {
       router.push('/routines');
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Klarte ikke lagre rutinen');
+      setError(err instanceof Error ? err.message : 'Failed to save routine');
     } finally {
       setSaving(false);
     }
@@ -78,10 +78,10 @@ export function RoutineEditor({ allExercises, initial }: RoutineEditorProps) {
     <div className="flex flex-col gap-6 max-w-xl">
       <Input
         id="routine-name"
-        label="Navn på rutine"
+        label="Routine name"
         value={name}
         onChange={(e) => { setName(e.target.value); setNameError(null); }}
-        placeholder="f.eks. Push A"
+        placeholder="e.g. Push A"
         errorText={nameError ?? undefined}
         autoFocus
       />
@@ -89,15 +89,15 @@ export function RoutineEditor({ allExercises, initial }: RoutineEditorProps) {
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium text-accent-muted">
-            Øvelser ({exercises.length})
+            Exercises ({exercises.length})
           </span>
           <Button variant="secondary" size="sm" onClick={() => setPickerOpen(true)}>
-            + Legg til
+            + Add
           </Button>
         </div>
         {exercises.length === 0 ? (
           <p className="text-accent-muted text-sm py-4 text-center border border-dashed border-border-teal rounded-lg">
-            Ingen øvelser enda
+            No exercises yet
           </p>
         ) : (
           <div className="rounded-lg bg-bg-card border border-border-teal px-3 py-1">
@@ -120,12 +120,12 @@ export function RoutineEditor({ allExercises, initial }: RoutineEditorProps) {
 
       <div className="flex gap-3">
         <Button onClick={handleSave} loading={saving} className="flex-1">
-          {initial ? 'Lagre endringer' : 'Opprett rutine'}
+          {initial ? 'Save changes' : 'Create routine'}
         </Button>
-        <Button variant="ghost" onClick={() => router.back()}>Avbryt</Button>
+        <Button variant="ghost" onClick={() => router.back()}>Cancel</Button>
       </div>
 
-      <Modal open={pickerOpen} onClose={() => setPickerOpen(false)} title="Velg øvelser">
+      <Modal open={pickerOpen} onClose={() => setPickerOpen(false)} title="Select exercises">
         <div className="h-[60vh]">
           <ExercisePicker
             exercises={allExercises}

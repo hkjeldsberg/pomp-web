@@ -7,7 +7,7 @@ interface SessionCardProps {
 
 export function SessionCard({ session }: SessionCardProps) {
   const date = new Date(session.started_at);
-  const dateStr = date.toLocaleDateString('nb-NO', { weekday: 'short', day: 'numeric', month: 'short' });
+  const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' });
   const duration = Math.round(session.duration_minutes);
 
   return (
@@ -18,12 +18,12 @@ export function SessionCard({ session }: SessionCardProps) {
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-text-primary font-semibold text-base">
-            {session.routine_name ?? 'Fri økt'}
+            {session.routine_name ?? 'Free workout'}
           </p>
           <p className="text-accent-muted text-sm mt-0.5 capitalize">{dateStr}</p>
         </div>
         <div className="text-right shrink-0">
-          <p className="text-accent-muted text-sm">{session.set_count} sett</p>
+          <p className="text-accent-muted text-sm">{session.set_count} sets</p>
           <p className="text-accent-muted text-sm">{duration} min</p>
         </div>
       </div>

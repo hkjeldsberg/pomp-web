@@ -25,7 +25,7 @@ export function ExerciseForm({ initialData, onSave, onCancel }: ExerciseFormProp
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
-    if (!name.trim()) { setNameError('Fyll inn navn på øvelsen'); return; }
+    if (!name.trim()) { setNameError('Enter exercise name'); return; }
     setNameError(null);
     setSaving(true);
     setError(null);
@@ -35,7 +35,7 @@ export function ExerciseForm({ initialData, onSave, onCancel }: ExerciseFormProp
         : await createExercise({ name: name.trim(), category });
       onSave(result);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Klarte ikke lagre øvelsen');
+      setError(err instanceof Error ? err.message : 'Failed to save exercise');
     } finally {
       setSaving(false);
     }
@@ -45,10 +45,10 @@ export function ExerciseForm({ initialData, onSave, onCancel }: ExerciseFormProp
     <div className="flex flex-col gap-4">
       <Input
         id="exercise-name"
-        label="Navn"
+        label="Name"
         value={name}
         onChange={(e) => { setName(e.target.value); setNameError(null); }}
-        placeholder="f.eks. Benkpress"
+        placeholder="e.g. Bench press"
         errorText={nameError ?? undefined}
         maxLength={80}
         autoFocus
@@ -56,7 +56,7 @@ export function ExerciseForm({ initialData, onSave, onCancel }: ExerciseFormProp
 
       <div>
         <label htmlFor="exercise-category" className="text-sm text-accent-muted font-medium block mb-2">
-          Kategori
+          Category
         </label>
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((cat) => (
@@ -81,8 +81,8 @@ export function ExerciseForm({ initialData, onSave, onCancel }: ExerciseFormProp
       {error && <p className="text-sm text-red-400">{error}</p>}
 
       <div className="flex gap-3">
-        <Button onClick={handleSave} loading={saving} className="flex-1">Lagre</Button>
-        <Button variant="ghost" onClick={onCancel}>Avbryt</Button>
+        <Button onClick={handleSave} loading={saving} className="flex-1">Save</Button>
+        <Button variant="ghost" onClick={onCancel}>Cancel</Button>
       </div>
     </div>
   );

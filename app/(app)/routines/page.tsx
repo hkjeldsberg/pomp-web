@@ -34,20 +34,20 @@ export default function RoutinesPage() {
     }
   }
 
-  if (loading) return <div className="text-accent-muted text-sm py-8 text-center">Laster…</div>;
+  if (loading) return <div className="text-accent-muted text-sm py-8 text-center">Loading…</div>;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-text-primary text-2xl font-bold">Rutiner</h1>
-        <Button size="sm" onClick={() => router.push('/routines/new')}>+ Ny rutine</Button>
+        <h1 className="text-text-primary text-2xl font-bold">Routines</h1>
+        <Button size="sm" onClick={() => router.push('/routines/new')}>+ New routine</Button>
       </div>
 
       {routines.length === 0 ? (
         <EmptyState
-          title="Ingen rutiner enda"
-          subtitle="Opprett din første treningsrutine for å komme i gang"
-          action={{ label: '+ Ny rutine', onClick: () => router.push('/routines/new') }}
+          title="No routines yet"
+          subtitle="Create your first workout routine to get started"
+          action={{ label: '+ New routine', onClick: () => router.push('/routines/new') }}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -73,9 +73,9 @@ export default function RoutinesPage() {
         open={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
-        title="Slett rutine"
-        message={`Er du sikker på at du vil slette "${deleteTarget?.name}"?`}
-        confirmLabel="Slett"
+        title="Delete routine"
+        message={`Are you sure you want to delete "${deleteTarget?.name}"?`}
+        confirmLabel="Delete"
         confirmVariant="danger"
         loading={deleting}
       />

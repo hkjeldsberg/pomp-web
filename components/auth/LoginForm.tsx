@@ -19,7 +19,7 @@ export function LoginForm() {
     setError(null);
 
     if (!email || !password) {
-      setError('Fyll inn e-post og passord');
+      setError('Please enter your email and password');
       return;
     }
 
@@ -41,17 +41,17 @@ export function LoginForm() {
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
       <Input
         id="email"
-        label="E-post"
+        label="Email"
         type="email"
         autoComplete="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="din@epost.no"
+        placeholder="you@example.com"
         required
       />
       <Input
         id="password"
-        label="Passord"
+        label="Password"
         type="password"
         autoComplete="current-password"
         value={password}
@@ -61,12 +61,12 @@ export function LoginForm() {
       />
       {error && <p className="text-sm text-red-400">{error}</p>}
       <Button type="submit" loading={loading} className="w-full mt-2">
-        Logg inn
+        Sign in
       </Button>
       <p className="text-center text-sm text-accent-muted">
-        Ingen konto?{' '}
+        No account?{' '}
         <Link href="/register" className="text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">
-          Registrer deg
+          Sign up
         </Link>
       </p>
     </form>

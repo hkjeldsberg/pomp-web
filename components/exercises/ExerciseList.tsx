@@ -57,7 +57,7 @@ export function ExerciseList({ initialExercises }: ExerciseListProps) {
           className={['px-3 py-1 rounded-full text-sm border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
             filter === null ? 'bg-accent border-accent text-bg-base font-semibold' : 'border-border-teal text-accent-muted hover:border-accent'].join(' ')}
         >
-          Alle
+          All
         </button>
         {ALL_CATEGORIES.map((cat) => (
           <button key={cat} onClick={() => setFilter(cat === filter ? null : cat)}
@@ -71,7 +71,7 @@ export function ExerciseList({ initialExercises }: ExerciseListProps) {
       {/* List */}
       <div className="rounded-xl bg-bg-card border border-border-teal px-3 py-1 mb-4">
         {filtered.length === 0
-          ? <p className="text-accent-muted text-sm py-6 text-center">Ingen øvelser funnet</p>
+          ? <p className="text-accent-muted text-sm py-6 text-center">No exercises found</p>
           : filtered.map((ex) => (
             <ExerciseListItem
               key={ex.id}
@@ -82,15 +82,15 @@ export function ExerciseList({ initialExercises }: ExerciseListProps) {
           ))}
       </div>
 
-      <Button onClick={() => setCreateOpen(true)}>+ Ny øvelse</Button>
+      <Button onClick={() => setCreateOpen(true)}>+ New exercise</Button>
 
       {/* Create modal */}
-      <Modal open={createOpen} onClose={() => setCreateOpen(false)} title="Ny øvelse">
+      <Modal open={createOpen} onClose={() => setCreateOpen(false)} title="New exercise">
         <ExerciseForm onSave={handleSaved} onCancel={() => setCreateOpen(false)} />
       </Modal>
 
       {/* Edit modal */}
-      <Modal open={editTarget !== null} onClose={() => setEditTarget(null)} title="Rediger øvelse">
+      <Modal open={editTarget !== null} onClose={() => setEditTarget(null)} title="Edit exercise">
         {editTarget && (
           <ExerciseForm
             initialData={editTarget}
@@ -105,9 +105,9 @@ export function ExerciseList({ initialExercises }: ExerciseListProps) {
         open={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
-        title="Slett øvelse"
-        message={`Er du sikker på at du vil slette "${deleteTarget?.name}"?`}
-        confirmLabel="Slett"
+        title="Delete exercise"
+        message={`Are you sure you want to delete "${deleteTarget?.name}"?`}
+        confirmLabel="Delete"
         confirmVariant="danger"
         loading={deleting}
       />

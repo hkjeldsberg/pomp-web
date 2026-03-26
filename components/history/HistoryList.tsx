@@ -18,15 +18,15 @@ export function HistoryList({ sessions, routines }: HistoryListProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-text-primary text-2xl font-bold">Historikk</h1>
-        <Button size="sm" onClick={() => setStartOpen(true)}>+ Start økt</Button>
+        <h1 className="text-text-primary text-2xl font-bold">History</h1>
+        <Button size="sm" onClick={() => setStartOpen(true)}>+ Start workout</Button>
       </div>
 
       {sessions.length === 0 ? (
         <div className="rounded-xl bg-bg-card border border-border-teal p-8 text-center">
-          <p className="text-text-primary font-semibold mb-2">Ingen økter enda</p>
-          <p className="text-accent-muted text-sm mb-4">Start din første treningsøkt</p>
-          <Button onClick={() => setStartOpen(true)}>+ Start økt</Button>
+          <p className="text-text-primary font-semibold mb-2">No sessions yet</p>
+          <p className="text-accent-muted text-sm mb-4">Start your first workout session</p>
+          <Button onClick={() => setStartOpen(true)}>+ Start workout</Button>
         </div>
       ) : (
         <div className="flex flex-col gap-3">

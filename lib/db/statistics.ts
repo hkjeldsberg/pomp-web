@@ -73,9 +73,10 @@ export async function getSessionDurations(dateRange: DateRange = 'all'): Promise
 
   if (error) throw new Error(error.message);
 
-  return (data ?? []).map((w) => ({
+  const rows = (data ?? []) as unknown as Array<{ started_at: string; ended_at: string }>;
+  return rows.map((w) => ({
     date: w.started_at.split('T')[0],
-    durationMinutes: (new Date(w.ended_at!).getTime() - new Date(w.started_at).getTime()) / 60000,
+    durationMinutes: (new Date(w.ended_at).getTime() - new Date(w.started_at).getTime()) / 60000,
   }));
 }
 
@@ -87,10 +88,9 @@ export async function getSessionVolumes(dateRange: DateRange = 'all'): Promise<V
 
   if (error) throw new Error(error.message);
 
-  return (data ?? []).map((w) => {
-    const sets = Array.isArray((w as { workout_sets?: Array<{ weight_kg: number; reps: number }> }).workout_sets)
-      ? (w as { workout_sets: Array<{ weight_kg: number; reps: number }> }).workout_sets
-      : [];
+  type VolumeRow = { started_at: string; workout_sets: Array<{ weight_kg: number; reps: number }> };
+  return ((data ?? []) as unknown as VolumeRow[]).map((w) => {
+    const sets = Array.isArray(w.workout_sets) ? w.workout_sets : [];
     const volume = sets.reduce((sum, s) => sum + s.weight_kg * s.reps, 0);
     return { date: w.started_at.split('T')[0], volumeKg: Math.round(volume) };
   });
@@ -106,9 +106,9 @@ export async function getExerciseProgression(exerciseId: string, dateRange: Date
 
   const points: ProgressionPoint[] = [];
 
-  for (const w of data ?? []) {
-    const sets = ((w as { workout_sets?: Array<{ weight_kg: number; reps: number; exercise_id: string }> }).workout_sets ?? [])
-      .filter((s) => s.exercise_id === exerciseId);
+  type ProgRow = { started_at: string; workout_sets: Array<{ weight_kg: number; reps: number; exercise_id: string }> };
+  for (const w of ((data ?? []) as unknown as ProgRow[])) {
+    const sets = (w.workout_sets ?? []).filter((s) => s.exercise_id === exerciseId);
     if (sets.length === 0) continue;
 
     let maxWeight = 0;
@@ -126,7 +126,6 @@ export async function getExerciseProgression(exerciseId: string, dateRange: Date
 
 export async function getLatestExerciseSets(exerciseId: string): Promise<Array<{ weight_kg: number; reps: number; set_number: number }>> {
   const { data: lastWorkout } = await supabase
-    
     .from('workouts')
     .select('id')
     .not('ended_at', 'is', null)
@@ -135,15 +134,15 @@ export async function getLatestExerciseSets(exerciseId: string): Promise<Array<{
     .maybeSingle();
 
   if (!lastWorkout) return [];
+  const workoutId = (lastWorkout as unknown as { id: string }).id;
 
   const { data, error } = await supabase
-    
     .from('workout_sets')
     .select('weight_kg, reps, set_number')
-    .eq('workout_id', lastWorkout.id)
+    .eq('workout_id', workoutId)
     .eq('exercise_id', exerciseId)
     .order('set_number', { ascending: true });
 
   if (error) throw new Error(error.message);
-  return data ?? [];
+  return (data ?? []) as unknown as Array<{ weight_kg: number; reps: number; set_number: number }>;
 }

@@ -15,7 +15,7 @@ export function SessionDetail({ workout }: SessionDetailProps) {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6 text-accent-muted text-sm">
-        <span>{startedAt.toLocaleDateString('nb-NO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
+        <span>{startedAt.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
         {duration !== null && <span>{duration} min</span>}
       </div>
 
@@ -27,10 +27,10 @@ export function SessionDetail({ workout }: SessionDetailProps) {
               <Badge label={exercise.category} />
             </div>
             <div className="grid grid-cols-4 text-xs text-accent-muted mb-2 px-1">
-              <span>Sett</span>
-              <span>Vekt</span>
+              <span>Set</span>
+              <span>Weight</span>
               <span>Reps</span>
-              <span>Notat</span>
+              <span>Note</span>
             </div>
             {sets
               .sort((a, b) => a.set_number - b.set_number)

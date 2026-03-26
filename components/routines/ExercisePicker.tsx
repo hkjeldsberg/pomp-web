@@ -21,19 +21,19 @@ export function ExercisePicker({ exercises, selectedIds, onToggle, onConfirm, on
     e.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const sections = CATEGORIES
+  const sections: { title: string; data: Exercise[] }[] = CATEGORIES
     .map((cat) => ({ title: cat, data: filtered.filter((e) => e.category === cat) }))
     .filter((s) => s.data.length > 0);
 
   // Exercises not matching any category bucket
   const other = filtered.filter((e) => !(CATEGORIES as readonly string[]).includes(e.category));
-  if (other.length > 0) sections.push({ title: 'Andre', data: other });
+  if (other.length > 0) sections.push({ title: 'Other', data: other });
 
   return (
     <div className="flex flex-col h-full">
       <input
         type="search"
-        placeholder="Søk øvelser…"
+        placeholder="Search exercises…"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         className="mb-3 h-10 rounded-lg bg-bg-surface border border-border-teal px-3 text-text-primary placeholder:text-accent-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent text-sm"
@@ -65,14 +65,14 @@ export function ExercisePicker({ exercises, selectedIds, onToggle, onConfirm, on
           </div>
         ))}
         {sections.length === 0 && (
-          <p className="text-accent-muted text-sm py-8 text-center">Ingen øvelser funnet</p>
+          <p className="text-accent-muted text-sm py-8 text-center">No exercises found</p>
         )}
       </div>
       <div className="flex gap-2 pt-4 border-t border-border-teal mt-2">
         <Button onClick={() => onConfirm(selectedIds)} className="flex-1">
-          Bekreft ({selectedIds.length})
+          Confirm ({selectedIds.length})
         </Button>
-        <Button variant="ghost" onClick={onClose}>Avbryt</Button>
+        <Button variant="ghost" onClick={onClose}>Cancel</Button>
       </div>
     </div>
   );

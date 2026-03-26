@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
 import { getRoutines } from '@/lib/db/routines';
 import { getExercises } from '@/lib/db/exercises';
 import { RoutineEditor } from '@/components/routines/RoutineEditor';
@@ -9,12 +10,16 @@ interface Props {
 
 export default async function RoutineEditorPage({ params }: Props) {
   const { id } = await params;
-  const [allExercises, routines] = await Promise.all([getExercises(), getRoutines()]);
+  const supabase = await createClient();
+  const [allExercises, routines] = await Promise.all([
+    getExercises(supabase),
+    getRoutines(supabase),
+  ]);
 
   if (id === 'new') {
     return (
       <div>
-        <h1 className="text-text-primary text-2xl font-bold mb-6">Ny rutine</h1>
+        <h1 className="text-text-primary text-2xl font-bold mb-6">New routine</h1>
         <RoutineEditor allExercises={allExercises} />
       </div>
     );
@@ -25,7 +30,7 @@ export default async function RoutineEditorPage({ params }: Props) {
 
   return (
     <div>
-      <h1 className="text-text-primary text-2xl font-bold mb-6">Rediger rutine</h1>
+      <h1 className="text-text-primary text-2xl font-bold mb-6">Edit routine</h1>
       <RoutineEditor allExercises={allExercises} initial={routine} />
     </div>
   );

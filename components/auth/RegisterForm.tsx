@@ -21,15 +21,15 @@ export function RegisterForm() {
     setError(null);
 
     if (!email || !password || !confirm) {
-      setError('Fyll inn alle feltene');
+      setError('Please fill in all fields');
       return;
     }
     if (password !== confirm) {
-      setError('Passordene stemmer ikke overens');
+      setError('Passwords do not match');
       return;
     }
     if (password.length < 6) {
-      setError('Passordet må være minst 6 tegn');
+      setError('Password must be at least 6 characters');
       return;
     }
 
@@ -53,8 +53,8 @@ export function RegisterForm() {
   if (success) {
     return (
       <div className="text-center py-8">
-        <p className="text-accent text-lg font-semibold mb-2">Konto opprettet!</p>
-        <p className="text-accent-muted text-sm">Sjekk e-posten din for bekreftelse.</p>
+        <p className="text-accent text-lg font-semibold mb-2">Account created!</p>
+        <p className="text-accent-muted text-sm">Check your email for confirmation.</p>
       </div>
     );
   }
@@ -63,17 +63,17 @@ export function RegisterForm() {
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
       <Input
         id="email"
-        label="E-post"
+        label="Email"
         type="email"
         autoComplete="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="din@epost.no"
+        placeholder="you@example.com"
         required
       />
       <Input
         id="password"
-        label="Passord"
+        label="Password"
         type="password"
         autoComplete="new-password"
         value={password}
@@ -83,7 +83,7 @@ export function RegisterForm() {
       />
       <Input
         id="confirm"
-        label="Bekreft passord"
+        label="Confirm password"
         type="password"
         autoComplete="new-password"
         value={confirm}
@@ -93,12 +93,12 @@ export function RegisterForm() {
       />
       {error && <p className="text-sm text-red-400">{error}</p>}
       <Button type="submit" loading={loading} className="w-full mt-2">
-        Opprett konto
+        Create account
       </Button>
       <p className="text-center text-sm text-accent-muted">
-        Har du konto?{' '}
+        Already have an account?{' '}
         <Link href="/login" className="text-accent hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded">
-          Logg inn
+          Sign in
         </Link>
       </p>
     </form>

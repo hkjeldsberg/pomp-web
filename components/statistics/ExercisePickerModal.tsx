@@ -27,19 +27,19 @@ export function ExercisePickerModal({ open, exercises, selectedId, onSelect, onC
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Velg øvelse" className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4">
+    <div role="dialog" aria-modal="true" aria-label="Select exercise" className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
       <div className="relative z-10 w-full max-w-sm bg-bg-surface border border-border-teal rounded-2xl flex flex-col max-h-[80vh] shadow-xl">
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
-          <span className="text-text-primary font-semibold">Velg øvelse</span>
+          <span className="text-text-primary font-semibold">Select exercise</span>
           <button onClick={onClose} className="text-accent-muted hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded px-2 py-1">
-            Lukk
+            Close
           </button>
         </div>
         <div className="px-4 pb-2">
           <input
             type="search"
-            placeholder="Søk øvelser…"
+            placeholder="Search exercises…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
@@ -48,7 +48,7 @@ export function ExercisePickerModal({ open, exercises, selectedId, onSelect, onC
         </div>
         <div className="overflow-y-auto flex-1 px-2 pb-2">
           {filtered.length === 0 ? (
-            <p className="text-accent-muted text-sm py-6 text-center">Ingen øvelser funnet</p>
+            <p className="text-accent-muted text-sm py-6 text-center">No exercises found</p>
           ) : filtered.map((ex) => (
             <button
               key={ex.id}
