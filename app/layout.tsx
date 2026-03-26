@@ -3,12 +3,13 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Pomp',
-  description: 'Treningslogg',
+  description: 'Workout tracker',
+  icons: { icon: '/favicon.svg' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="nb">
+    <html lang="en">
       <body className="bg-bg-base text-text-primary antialiased">
         {children}
       </body>
