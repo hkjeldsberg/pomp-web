@@ -89,6 +89,7 @@ export function SetRow({
         inputMode="decimal"
         value={weight}
         onChange={(e) => { setWeight(e.target.value); setWeightDirty(true); setError(null); }}
+        onFocus={(e) => { if (!weightDirty) e.target.select(); }}
         placeholder="kg"
         aria-label={`Weight set ${setNumber}`}
         className={['flex-1 h-11 min-w-0 rounded-lg bg-bg-surface border border-border-teal px-3 text-sm placeholder:text-accent-muted/30',
@@ -101,6 +102,7 @@ export function SetRow({
         inputMode="numeric"
         value={reps}
         onChange={(e) => { setReps(e.target.value); setRepsDirty(true); setError(null); }}
+        onFocus={(e) => { if (!repsDirty) e.target.select(); }}
         placeholder="reps"
         aria-label={`Reps set ${setNumber}`}
         className={['flex-1 h-11 min-w-0 rounded-lg bg-bg-surface border border-border-teal px-3 text-sm placeholder:text-accent-muted/30',

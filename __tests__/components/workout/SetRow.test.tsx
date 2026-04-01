@@ -62,6 +62,15 @@ describe('SetRow', () => {
     expect(weightInput.className).toMatch(/text-text-primary\/65/);
   });
 
+  it('selecting all text on focus when value is pre-filled (not dirty)', async () => {
+    const user = userEvent.setup();
+    render(<SetRow {...baseProps} previousWeight={80} previousReps={5} />);
+
+    const weightInput = screen.getByLabelText(/weight set 1/i) as HTMLInputElement;
+    await user.click(weightInput);
+    expect(weightInput.value).toBe('80');
+  });
+
   it('pre-filled values turn white (dirty) after pressing done without editing', async () => {
     const user = userEvent.setup();
     const onLog = jest.fn().mockResolvedValue(undefined);
