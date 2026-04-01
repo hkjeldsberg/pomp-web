@@ -89,7 +89,14 @@ describe('ActiveWorkout — rest timer visible', () => {
   });
 
   afterEach(() => {
-    mockUseRestTimer.mockReset();
+    mockUseRestTimer.mockReturnValue({
+      secondsRemaining: null,
+      totalSeconds: null,
+      isRunning: false,
+      startTimer: jest.fn(),
+      stopTimer: jest.fn(),
+      resetTimer: jest.fn(),
+    });
   });
 
   it('shows rest timer pill with seconds', () => {
