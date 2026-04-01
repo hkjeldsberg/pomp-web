@@ -73,8 +73,8 @@ export function SetRow({
   }
 
   // Text color: greyed out when showing autofilled (not user-edited) values
-  const weightTextClass = weight && !weightDirty ? 'text-text-primary/40' : 'text-text-primary';
-  const repsTextClass = reps && !repsDirty ? 'text-text-primary/40' : 'text-text-primary';
+  const weightTextClass = weight && !weightDirty ? 'text-text-primary/65' : 'text-text-primary';
+  const repsTextClass = reps && !repsDirty ? 'text-text-primary/65' : 'text-text-primary';
 
   return (
     <div className={['flex items-center gap-2 py-1.5', completed ? 'opacity-50' : ''].join(' ')}>

@@ -54,4 +54,11 @@ describe('SetRow', () => {
     const { container } = render(<SetRow {...baseProps} completed={true} />);
     expect(container.firstChild).toHaveClass('opacity-50');
   });
+
+  it('pre-filled weight input has at least 65% opacity class', () => {
+    render(<SetRow {...baseProps} previousWeight={80} previousReps={5} />);
+    const weightInput = screen.getByLabelText(/weight set 1/i);
+    expect(weightInput.className).not.toMatch(/text-text-primary\/40/);
+    expect(weightInput.className).toMatch(/text-text-primary\/65/);
+  });
 });
