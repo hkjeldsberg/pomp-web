@@ -61,4 +61,17 @@ describe('SetRow', () => {
     expect(weightInput.className).not.toMatch(/text-text-primary\/40/);
     expect(weightInput.className).toMatch(/text-text-primary\/65/);
   });
+
+  it('pre-filled values turn white (dirty) after pressing done without editing', async () => {
+    const user = userEvent.setup();
+    const onLog = jest.fn().mockResolvedValue(undefined);
+    render(<SetRow {...baseProps} onLog={onLog} previousWeight={80} previousReps={5} />);
+
+    await user.click(screen.getByRole('button', { name: /log set/i }));
+
+    const weightInput = screen.getByLabelText(/weight set 1/i);
+    const repsInput = screen.getByLabelText(/reps set 1/i);
+    expect(weightInput.className).not.toMatch(/text-text-primary\/65/);
+    expect(repsInput.className).not.toMatch(/text-text-primary\/65/);
+  });
 });

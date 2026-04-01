@@ -64,6 +64,8 @@ export function SetRow({
     setError(null);
     try {
       await onLog({ weight: w, reps: r });
+      setWeightDirty(true);
+      setRepsDirty(true);
       onTimerStart?.();
     } catch {
       setError('Failed to save');
