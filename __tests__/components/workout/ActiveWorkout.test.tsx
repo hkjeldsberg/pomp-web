@@ -88,6 +88,10 @@ describe('ActiveWorkout — rest timer visible', () => {
     });
   });
 
+  afterEach(() => {
+    mockUseRestTimer.mockReset();
+  });
+
   it('shows rest timer pill with seconds', () => {
     render(
       <ActiveWorkout
