@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { ActiveWorkout } from '@/components/workout/ActiveWorkout';
 import type { RoutineWithExercises } from '@/lib/db/routines';
+import { useRestTimer } from '@/lib/hooks/useRestTimer';
+
+const mockUseRestTimer = useRestTimer as jest.Mock;
 
 jest.mock('@/lib/hooks/useActiveWorkout', () => ({
   useActiveWorkout: () => ({
@@ -13,6 +16,17 @@ jest.mock('@/lib/hooks/useActiveWorkout', () => ({
     endSession: jest.fn(),
     cancelSession: jest.fn(),
     onError: null,
+  }),
+}));
+
+jest.mock('@/lib/hooks/useRestTimer', () => ({
+  useRestTimer: jest.fn().mockReturnValue({
+    secondsRemaining: null,
+    totalSeconds: null,
+    isRunning: false,
+    startTimer: jest.fn(),
+    stopTimer: jest.fn(),
+    resetTimer: jest.fn(),
   }),
 }));
 
@@ -59,5 +73,65 @@ describe('ActiveWorkout', () => {
     // 2 exercises × 3 default sets = 6 set-number elements showing "1", "2", "3"
     const ones = screen.getAllByText('1');
     expect(ones.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('ActiveWorkout — rest timer visible', () => {
+  beforeEach(() => {
+    mockUseRestTimer.mockReturnValue({
+      secondsRemaining: 90,
+      totalSeconds: 120,
+      isRunning: true,
+      startTimer: jest.fn(),
+      stopTimer: jest.fn(),
+      resetTimer: jest.fn(),
+    });
+  });
+
+  afterEach(() => {
+    mockUseRestTimer.mockReturnValue({
+      secondsRemaining: null,
+      totalSeconds: null,
+      isRunning: false,
+      startTimer: jest.fn(),
+      stopTimer: jest.fn(),
+      resetTimer: jest.fn(),
+    });
+  });
+
+  it('shows rest timer pill with seconds', () => {
+    render(
+      <ActiveWorkout
+        workoutId="w1"
+        routine={routine}
+        startedAt="2025-01-01T10:00:00Z"
+        previousSets={{}}
+      />
+    );
+    expect(screen.getByText(/rest 90s/i)).toBeInTheDocument();
+  });
+
+  it('shows dismiss button on rest timer', () => {
+    render(
+      <ActiveWorkout
+        workoutId="w1"
+        routine={routine}
+        startedAt="2025-01-01T10:00:00Z"
+        previousSets={{}}
+      />
+    );
+    expect(screen.getByRole('button', { name: /dismiss rest timer/i })).toBeInTheDocument();
+  });
+
+  it('adds bottom padding to main container when timer is visible', () => {
+    const { container } = render(
+      <ActiveWorkout
+        workoutId="w1"
+        routine={routine}
+        startedAt="2025-01-01T10:00:00Z"
+        previousSets={{}}
+      />
+    );
+    expect(container.firstChild).toHaveClass('pb-28');
   });
 });

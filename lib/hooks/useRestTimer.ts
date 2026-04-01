@@ -8,6 +8,7 @@ export interface RestTimerConfig {
 
 export interface UseRestTimerReturn {
   secondsRemaining: number | null;
+  totalSeconds: number | null;
   isRunning: boolean;
   startTimer: (exerciseId?: string) => void;
   stopTimer: () => void;
@@ -16,6 +17,7 @@ export interface UseRestTimerReturn {
 
 export function useRestTimer(config: RestTimerConfig): UseRestTimerReturn {
   const [secondsRemaining, setSecondsRemaining] = useState<number | null>(null);
+  const [totalSeconds, setTotalSeconds] = useState<number | null>(null);
   const endTimeRef = useRef<number | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -29,6 +31,7 @@ export function useRestTimer(config: RestTimerConfig): UseRestTimerReturn {
   const stopTimer = useCallback((): void => {
     clearTick();
     setSecondsRemaining(null);
+    setTotalSeconds(null);
     endTimeRef.current = null;
   }, [clearTick]);
 
@@ -47,6 +50,7 @@ export function useRestTimer(config: RestTimerConfig): UseRestTimerReturn {
 
     endTimeRef.current = Date.now() + duration * 1000;
     setSecondsRemaining(duration);
+    setTotalSeconds(duration);
 
     intervalRef.current = setInterval(() => {
       const remaining = Math.ceil(((endTimeRef.current ?? 0) - Date.now()) / 1000);
@@ -66,6 +70,7 @@ export function useRestTimer(config: RestTimerConfig): UseRestTimerReturn {
 
   return {
     secondsRemaining,
+    totalSeconds,
     isRunning: secondsRemaining !== null && secondsRemaining > 0,
     startTimer,
     stopTimer,

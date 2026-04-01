@@ -21,7 +21,7 @@ export function ActiveWorkout({ workoutId, routine, startedAt, previousSets, ini
   const { sets, setSets, logSet, toggleComplete, deleteSets, endSession, cancelSession, onError } =
     useActiveWorkout(workoutId);
 
-  const { secondsRemaining, isRunning, startTimer, stopTimer } = useRestTimer({
+  const { secondsRemaining, totalSeconds, isRunning, startTimer, stopTimer } = useRestTimer({
     defaultSeconds: 120,
     enabled: true,
   });
@@ -42,8 +42,14 @@ export function ActiveWorkout({ workoutId, routine, startedAt, previousSets, ini
     return () => window.removeEventListener('beforeunload', handler);
   }, []);
 
+  const timerVisible = isRunning || secondsRemaining === 0;
+  const progressPct =
+    totalSeconds && secondsRemaining != null && secondsRemaining > 0
+      ? (secondsRemaining / totalSeconds) * 100
+      : 0;
+
   return (
-    <div>
+    <div className={timerVisible ? 'pb-28' : ''}>
       <SessionHeader routineName={routine.name} startedAt={startedAt} />
 
       {onError && (
@@ -81,27 +87,37 @@ export function ActiveWorkout({ workoutId, routine, startedAt, previousSets, ini
       />
 
       {/* Rest timer overlay */}
-      {(isRunning || secondsRemaining === 0) && (
+      {timerVisible && (
         <div className="fixed bottom-20 md:bottom-6 inset-x-0 flex justify-center z-30 pointer-events-none px-4">
           <div
             className={[
-              'flex items-center gap-3 px-5 py-3 rounded-full shadow-lg pointer-events-auto',
+              'flex flex-col gap-1.5 px-5 py-3 rounded-2xl shadow-lg pointer-events-auto min-w-[180px]',
               'border text-sm font-semibold transition-colors',
               secondsRemaining === 0
                 ? 'bg-accent border-accent text-bg-base'
                 : 'bg-bg-surface border-border-teal text-text-primary',
             ].join(' ')}
           >
-            <span className="tabular-nums text-base">
-              {secondsRemaining === 0 ? 'Rest over!' : `Rest ${secondsRemaining}s`}
-            </span>
-            <button
-              onClick={stopTimer}
-              aria-label="Dismiss rest timer"
-              className="text-xs opacity-60 hover:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-            >
-              ✕
-            </button>
+            <div className="flex items-center justify-between gap-3">
+              <span className="tabular-nums text-base">
+                {secondsRemaining === 0 ? 'Rest over!' : `Rest ${secondsRemaining}s`}
+              </span>
+              <button
+                onClick={stopTimer}
+                aria-label="Dismiss rest timer"
+                className="size-8 flex items-center justify-center text-base rounded-full hover:bg-black/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              >
+                ✕
+              </button>
+            </div>
+            {secondsRemaining !== null && secondsRemaining > 0 && totalSeconds !== null && (
+              <div className="h-[3px] w-full rounded-full bg-black/10 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-accent transition-all duration-500"
+                  style={{ width: `${progressPct}%` }}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}

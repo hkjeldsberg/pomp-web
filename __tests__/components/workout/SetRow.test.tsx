@@ -54,4 +54,51 @@ describe('SetRow', () => {
     const { container } = render(<SetRow {...baseProps} completed={true} />);
     expect(container.firstChild).toHaveClass('opacity-50');
   });
+
+  it('pre-filled weight input has at least 65% opacity class', () => {
+    render(<SetRow {...baseProps} previousWeight={80} previousReps={5} />);
+    const weightInput = screen.getByLabelText(/weight set 1/i);
+    expect(weightInput.className).not.toMatch(/text-text-primary\/40/);
+    expect(weightInput.className).toMatch(/text-text-primary\/65/);
+  });
+
+  it('selecting all text on focus when value is pre-filled (not dirty)', async () => {
+    const user = userEvent.setup();
+    render(<SetRow {...baseProps} previousWeight={80} previousReps={5} />);
+
+    const weightInput = screen.getByLabelText(/weight set 1/i) as HTMLInputElement;
+    await user.click(weightInput);
+    expect(weightInput.value).toBe('80');
+  });
+
+  it('shows circle icon when set is not logged', () => {
+    render(<SetRow {...baseProps} />);
+    const btn = screen.getByRole('button', { name: /log set/i });
+    expect(btn.textContent).toBe('○');
+  });
+
+  it('shows checkmark when set is logged but not completed', () => {
+    render(<SetRow {...baseProps} loggedSetId="s1" loggedWeight={80} loggedReps={5} completed={false} />);
+    const btn = screen.getByRole('button', { name: /mark as complete/i });
+    expect(btn.textContent).toBe('✓');
+  });
+
+  it('shows checkmark when set is completed', () => {
+    render(<SetRow {...baseProps} loggedSetId="s1" loggedWeight={80} loggedReps={5} completed={true} />);
+    const btn = screen.getByRole('button', { name: /mark as incomplete/i });
+    expect(btn.textContent).toBe('✓');
+  });
+
+  it('pre-filled values turn white (dirty) after pressing done without editing', async () => {
+    const user = userEvent.setup();
+    const onLog = jest.fn().mockResolvedValue(undefined);
+    render(<SetRow {...baseProps} onLog={onLog} previousWeight={80} previousReps={5} />);
+
+    await user.click(screen.getByRole('button', { name: /log set/i }));
+
+    const weightInput = screen.getByLabelText(/weight set 1/i);
+    const repsInput = screen.getByLabelText(/reps set 1/i);
+    expect(weightInput.className).not.toMatch(/text-text-primary\/65/);
+    expect(repsInput.className).not.toMatch(/text-text-primary\/65/);
+  });
 });

@@ -64,6 +64,8 @@ export function SetRow({
     setError(null);
     try {
       await onLog({ weight: w, reps: r });
+      setWeightDirty(true);
+      setRepsDirty(true);
       onTimerStart?.();
     } catch {
       setError('Failed to save');
@@ -73,8 +75,8 @@ export function SetRow({
   }
 
   // Text color: greyed out when showing autofilled (not user-edited) values
-  const weightTextClass = weight && !weightDirty ? 'text-text-primary/40' : 'text-text-primary';
-  const repsTextClass = reps && !repsDirty ? 'text-text-primary/40' : 'text-text-primary';
+  const weightTextClass = weight && !weightDirty ? 'text-text-primary/65' : 'text-text-primary';
+  const repsTextClass = reps && !repsDirty ? 'text-text-primary/65' : 'text-text-primary';
 
   return (
     <div className={['flex items-center gap-2 py-1.5', completed ? 'opacity-50' : ''].join(' ')}>
@@ -87,6 +89,7 @@ export function SetRow({
         inputMode="decimal"
         value={weight}
         onChange={(e) => { setWeight(e.target.value); setWeightDirty(true); setError(null); }}
+        onFocus={(e) => { if (!weightDirty) e.target.select(); }}
         placeholder="kg"
         aria-label={`Weight set ${setNumber}`}
         className={['flex-1 h-11 min-w-0 rounded-lg bg-bg-surface border border-border-teal px-3 text-sm placeholder:text-accent-muted/30',
@@ -99,6 +102,7 @@ export function SetRow({
         inputMode="numeric"
         value={reps}
         onChange={(e) => { setReps(e.target.value); setRepsDirty(true); setError(null); }}
+        onFocus={(e) => { if (!repsDirty) e.target.select(); }}
         placeholder="reps"
         aria-label={`Reps set ${setNumber}`}
         className={['flex-1 h-11 min-w-0 rounded-lg bg-bg-surface border border-border-teal px-3 text-sm placeholder:text-accent-muted/30',
@@ -120,7 +124,7 @@ export function SetRow({
               : 'border-border-teal text-accent-muted hover:border-accent hover:text-accent',
         ].join(' ')}
       >
-        {saving ? '…' : '✓'}
+        {saving ? '…' : (loggedSetId ? '✓' : '○')}
       </button>
 
       {/* Validation error (screen-reader only) */}
