@@ -71,6 +71,24 @@ describe('SetRow', () => {
     expect(weightInput.value).toBe('80');
   });
 
+  it('shows circle icon when set is not logged', () => {
+    render(<SetRow {...baseProps} />);
+    const btn = screen.getByRole('button', { name: /log set/i });
+    expect(btn.textContent).toBe('○');
+  });
+
+  it('shows checkmark when set is logged but not completed', () => {
+    render(<SetRow {...baseProps} loggedSetId="s1" loggedWeight={80} loggedReps={5} completed={false} />);
+    const btn = screen.getByRole('button', { name: /mark as complete/i });
+    expect(btn.textContent).toBe('✓');
+  });
+
+  it('shows checkmark when set is completed', () => {
+    render(<SetRow {...baseProps} loggedSetId="s1" loggedWeight={80} loggedReps={5} completed={true} />);
+    const btn = screen.getByRole('button', { name: /mark as incomplete/i });
+    expect(btn.textContent).toBe('✓');
+  });
+
   it('pre-filled values turn white (dirty) after pressing done without editing', async () => {
     const user = userEvent.setup();
     const onLog = jest.fn().mockResolvedValue(undefined);

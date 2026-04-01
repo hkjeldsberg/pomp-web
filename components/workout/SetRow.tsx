@@ -124,7 +124,7 @@ export function SetRow({
               : 'border-border-teal text-accent-muted hover:border-accent hover:text-accent',
         ].join(' ')}
       >
-        {saving ? '…' : '✓'}
+        {saving ? '…' : (loggedSetId ? '✓' : '○')}
       </button>
 
       {/* Validation error (screen-reader only) */}
