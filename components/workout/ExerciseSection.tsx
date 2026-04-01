@@ -24,7 +24,7 @@ export function ExerciseSection({
   exerciseId, exerciseName, category, workoutId,
   loggedSets, previousSets, onLog, onToggleComplete, onDeleteSet, onTimerStart,
 }: ExerciseSectionProps) {
-  const totalRows = Math.max(DEFAULT_SETS, loggedSets.length + (loggedSets.length < DEFAULT_SETS ? 0 : 1));
+  const totalRows = Math.max(DEFAULT_SETS, loggedSets.length);
 
   return (
     <div className="rounded-xl bg-bg-card border border-border-teal p-4 mb-3">
