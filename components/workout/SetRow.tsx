@@ -81,7 +81,7 @@ export function SetRow({
   return (
     <div className={['flex items-center gap-2 py-1.5', completed ? 'opacity-50' : ''].join(' ')}>
       {/* Set number */}
-      <span className="w-5 text-center text-xs text-accent-muted shrink-0">{setNumber}</span>
+      <span className="w-5 text-center text-base text-accent-muted shrink-0">{setNumber}</span>
 
       {/* Weight */}
       <input
@@ -92,7 +92,7 @@ export function SetRow({
         onFocus={(e) => { if (!weightDirty) e.target.select(); }}
         placeholder="kg"
         aria-label={`Weight set ${setNumber}`}
-        className={['flex-1 h-11 min-w-0 rounded-lg bg-bg-surface border border-border-teal px-3 text-sm placeholder:text-accent-muted/30',
+        className={['flex-1 h-11 min-w-0 rounded-lg bg-bg-surface border border-border-teal px-3 text-base placeholder:text-accent-muted/30',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent', weightTextClass].join(' ')}
       />
 
@@ -105,7 +105,7 @@ export function SetRow({
         onFocus={(e) => { if (!repsDirty) e.target.select(); }}
         placeholder="reps"
         aria-label={`Reps set ${setNumber}`}
-        className={['flex-1 h-11 min-w-0 rounded-lg bg-bg-surface border border-border-teal px-3 text-sm placeholder:text-accent-muted/30',
+        className={['flex-1 h-11 min-w-0 rounded-lg bg-bg-surface border border-border-teal px-3 text-base placeholder:text-accent-muted/30',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent', repsTextClass].join(' ')}
       />
 
