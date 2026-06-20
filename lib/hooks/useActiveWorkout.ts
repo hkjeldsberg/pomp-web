@@ -21,6 +21,7 @@ interface UseActiveWorkoutReturn {
   endSession: (workoutId: string) => Promise<void>;
   cancelSession: (workoutId: string) => Promise<void>;
   onError: string | null;
+  clearError: () => void;
 }
 
 export function useActiveWorkout(workoutId: string): UseActiveWorkoutReturn {
@@ -35,7 +36,8 @@ export function useActiveWorkout(workoutId: string): UseActiveWorkoutReturn {
     reps: number;
     note?: string | null;
   }): Promise<void> => {
-    const tempId = `temp-${Date.now()}`;
+    setOnError(null);
+    const tempId = `temp-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const optimisticSet: ActiveSet = {
       id: tempId,
       workout_id: workoutId,
@@ -72,6 +74,7 @@ export function useActiveWorkout(workoutId: string): UseActiveWorkoutReturn {
   }, [workoutId]);
 
   const editSet = useCallback(async (id: string, data: { weightKg: number; reps: number; note?: string | null }): Promise<void> => {
+    setOnError(null);
     setSets((prev) => prev.map((s) => s.id === id ? { ...s, weight_kg: data.weightKg, reps: data.reps, note: data.note ?? s.note } : s));
     try {
       await dbUpdateSet(id, { weight_kg: data.weightKg, reps: data.reps, note: data.note });
@@ -83,6 +86,7 @@ export function useActiveWorkout(workoutId: string): UseActiveWorkoutReturn {
   const toggleComplete = useCallback(async (id: string): Promise<void> => {
     const set = sets.find((s) => s.id === id);
     if (!set) return;
+    setOnError(null);
     const newCompleted = !set.completed;
     setSets((prev) => prev.map((s) => s.id === id ? { ...s, completed: newCompleted } : s));
     try {
@@ -94,6 +98,7 @@ export function useActiveWorkout(workoutId: string): UseActiveWorkoutReturn {
   }, [sets]);
 
   const deleteSets = useCallback(async (id: string): Promise<void> => {
+    setOnError(null);
     setSets((prev) => prev.filter((s) => s.id !== id));
     try {
       await dbDeleteSet(id);
@@ -112,5 +117,7 @@ export function useActiveWorkout(workoutId: string): UseActiveWorkoutReturn {
     router.back();
   }, [router]);
 
-  return { sets, setSets, logSet, editSet, toggleComplete, deleteSets, endSession, cancelSession, onError };
+  const clearError = useCallback((): void => setOnError(null), []);
+
+  return { sets, setSets, logSet, editSet, toggleComplete, deleteSets, endSession, cancelSession, onError, clearError };
 }

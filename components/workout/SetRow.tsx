@@ -88,12 +88,13 @@ export function SetRow({
         type="number"
         inputMode="decimal"
         value={weight}
+        disabled={completed}
         onChange={(e) => { setWeight(e.target.value); setWeightDirty(true); setError(null); }}
         onFocus={(e) => { if (!weightDirty) e.target.select(); }}
         placeholder="kg"
         aria-label={`Weight set ${setNumber}`}
         className={['flex-1 h-11 min-w-0 rounded-lg bg-bg-surface border border-border-teal px-3 text-base placeholder:text-accent-muted/30',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent', weightTextClass].join(' ')}
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed', weightTextClass].join(' ')}
       />
 
       {/* Reps */}
@@ -101,12 +102,13 @@ export function SetRow({
         type="number"
         inputMode="numeric"
         value={reps}
+        disabled={completed}
         onChange={(e) => { setReps(e.target.value); setRepsDirty(true); setError(null); }}
         onFocus={(e) => { if (!repsDirty) e.target.select(); }}
         placeholder="reps"
         aria-label={`Reps set ${setNumber}`}
         className={['flex-1 h-11 min-w-0 rounded-lg bg-bg-surface border border-border-teal px-3 text-base placeholder:text-accent-muted/30',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent', repsTextClass].join(' ')}
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed', repsTextClass].join(' ')}
       />
 
       {/* Single checkmark button — logs set (first press) or toggles complete */}

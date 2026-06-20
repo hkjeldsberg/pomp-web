@@ -132,6 +132,6 @@ describe('ActiveWorkout — rest timer visible', () => {
         previousSets={{}}
       />
     );
-    expect(container.firstChild).toHaveClass('pb-28');
+    expect(container.firstChild).toHaveClass('pb-20');
   });
 });
