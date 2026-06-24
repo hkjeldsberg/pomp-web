@@ -4,7 +4,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Pomp',
   description: 'Workout tracker',
-  icons: { icon: '/favicon.svg' },
+  icons: { icon: '/favicon.svg', apple: '/apple-icon.png' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
